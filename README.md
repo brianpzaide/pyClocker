@@ -16,7 +16,7 @@ This cli has the following commands.
 If there already exists an on going worksession(a record with ```date``` as current date and ```stop_time``` as null), the app notifies the user to end the current worksession first.
 
 * ```stop```: This updates the ```stop_time``` of the record in a database that has ```date``` as current date, ```start_time``` as the timestamp with the latest value and ```stop_time``` as null, with  current timestamp.
-If such a record does not exist in the database, it notifies the user to start a new worksession first.
+If such a record does not exist in the database, the app notifies the user to start a new worksession first.
 
 * ```today```: This returns the total hours one has invested in programming today.
 it does this by computing the sum of difference between ```stop_time``` and ```start_time``` having ```date``` as current date and ```stop_time``` as not null.
