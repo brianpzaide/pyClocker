@@ -24,3 +24,8 @@ it does this by computing the sum of difference between ```stop_time``` and ```s
 * ```daily```: This displays a graph showing hours invested in programming every day.
 
 It is built using Typer.
+
+## To run
+
+* To install the cli, after activating a virtual environment run ```pip install .```
+* run ```pyClocker <command>```
