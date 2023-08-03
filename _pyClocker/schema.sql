@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS worksessions;
 CREATE TABLE worksessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     date TEXT NOT NULL,
+    activity TEXT NOT NULL,
     start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     stop_time TIMESTAMP
 );

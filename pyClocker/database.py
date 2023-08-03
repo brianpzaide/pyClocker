@@ -11,17 +11,20 @@ DEFAULT_DB_FILE_PATH = Path.joinpath(Path.cwd(), "_pyClocker", "worksessions.db"
 SCHEMA_FILE_PATH = Path.joinpath(Path.cwd(), "_pyClocker", "schema.sql")
 
 class WorkSession(NamedTuple):
+    activity: str
     start_time: float
     stop_time: float
 
 class WorkSessionInfo(NamedTuple):
     id: int
     date: str
+    activity: str
     start_time: float
     stop_time: float
 
 class DailyWorkHours(NamedTuple):
     date: str
+    activity: str
     hours: float
 
 def get_database_path(config_file: Path) -> Path:
@@ -45,8 +48,8 @@ class DatabaseHandler:
     def get_time_spent_on_work_for_today(self) -> List[WorkSession]:
         connection = sqlite3.connect(self._db_path)
         cursor = connection.cursor()
-        work_sessions = cursor.execute('SELECT start_time, stop_time FROM worksessions where date=? AND stop_time is NOT NULL;', (date.today().strftime(DEFAULT_DATE_FORMAT),)).fetchall()
-        work_sessions = [WorkSession(start_time=start, stop_time=stop) for start, stop in work_sessions]
+        work_sessions = cursor.execute('SELECT activity, start_time, stop_time FROM worksessions where date=? AND stop_time is NOT NULL;', (date.today().strftime(DEFAULT_DATE_FORMAT),)).fetchall()
+        work_sessions = [WorkSession(activity=activity, start_time=start, stop_time=stop) for activity, start, stop in work_sessions]
         connection.close()
         return work_sessions
     
@@ -58,10 +61,10 @@ class DatabaseHandler:
             latest_work_session = WorkSessionInfo(*latest_work_session)
         return latest_work_session
 
-    def create_work_session(self):
+    def create_work_session(self, activity):
         connection = sqlite3.connect(self._db_path)
         cursor = connection.cursor()
-        cursor.execute('INSERT INTO worksessions(date, start_time) values(?, ?);', (date.today().strftime(DEFAULT_DATE_FORMAT), datetime.now().timestamp()))
+        cursor.execute('INSERT INTO worksessions(date, activity, start_time) values(?, ?, ?);', (date.today().strftime(DEFAULT_DATE_FORMAT), activity, datetime.now().timestamp()))
         connection.commit()
         connection.close()
 

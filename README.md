@@ -29,3 +29,7 @@ It is built using Typer.
 
 * To install the cli, after activating a virtual environment run ```pip install .```
 * run ```pyClocker <command>```
+
+## TODO
+
+[ x ] Add the ability to track time for multiple activities.

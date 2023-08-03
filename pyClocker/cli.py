@@ -1,12 +1,14 @@
 from pathlib import Path
 from typing import Optional, List
 
+import typer
+from typing_extensions import Annotated
+
+import matplotlib.pyplot as plt
+
 from . import(
     SUCCESS, ERRORS, __app_name__, __version__, config, database, pyClocker
 )
-
-import typer
-import matplotlib.pyplot as plt
 
 app = typer.Typer()
 
@@ -57,10 +59,12 @@ def get_pyClocker() -> pyClocker.PyClocker:
         raise typer.Exit(1)
 
 @app.command(name="start")
-def start_session() -> None:
+def start_session(
+    activity: Annotated[str, typer.Option(help="Name of the activity to keep track of time spent on.")] = "programming",
+    ) -> None:
     """Start a new Session."""
     mpt = get_pyClocker()
-    res = mpt.start()
+    res = mpt.start(activity)
     if res == SUCCESS:
         typer.secho(
             'New work session started', fg=typer.colors.GREEN
