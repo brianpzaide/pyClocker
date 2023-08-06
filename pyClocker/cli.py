@@ -1,5 +1,7 @@
 from pathlib import Path
 from typing import Optional, List
+from dataclasses import dataclass
+from collections import defaultdict
 
 import typer
 from typing_extensions import Annotated
@@ -9,6 +11,12 @@ import matplotlib.pyplot as plt
 from . import(
     SUCCESS, ERRORS, __app_name__, __version__, config, database, pyClocker
 )
+
+class ActivityDailyWorkHours():
+    def __init__(self):
+        self.dates = []
+        self.sessions = []
+    
 
 app = typer.Typer()
 
@@ -108,16 +116,20 @@ def daily_stats() -> None:
     """Get number of hours put in everyday."""
     mpt = get_pyClocker()
     res = mpt.hours_put_in_daily()
-    days = []
-    hours = []
+    activities_days_hours = defaultdict(ActivityDailyWorkHours)
+
     for dwh in res:
-        days.append(dwh.date)
-        hours.append(dwh.hours)
+        if not activities_days_hours.get(dwh.activity):
+            activities_days_hours[dwh.activity] = ActivityDailyWorkHours()
+        activities_days_hours[dwh.activity].dates.append(dwh.date)
+        activities_days_hours[dwh.activity].sessions.append(dwh.hours)
     
     # plotting a line graph x-axis: days, y-xis: hours
     plt.style.use('_mpl-gallery')
     fig, ax = plt.subplots()
-    ax.plot(days, hours, linewidth=2.0)
+    for activity in activities_days_hours.keys():
+        ax.plot(activities_days_hours[activity].dates, activities_days_hours[activity].sessions, linewidth=2.0)
+    plt.legend(activities_days_hours.items(), loc='upper left')
     ax.set_xlabel("day->")
     ax.set_ylabel("hours->")
     plt.show()

@@ -49,11 +49,6 @@ class PyClocker:
         
         for activity, hrs in hours_per_activity.items():
             hours_spent_today.append([activity, '{0:.2f}'.format(hrs)])
-
-        
-        print(hours_spent_today)
-
-        # return f"Today you worked for {'{0:.2f}'.format(hours_put_in_today)} hrs"
         return tabulate(hours_spent_today, headers = ["activity", "time spent(hours)"])
         
     

@@ -78,7 +78,7 @@ class DatabaseHandler:
     def get_daily_time_spent_on_work(self) -> List[DailyWorkHours]:
         connection = sqlite3.connect(self._db_path)
         cursor = connection.cursor()
-        results = cursor.execute('SELECT date, ROUND(SUM(stop_time-start_time)*1.0/3600, 2) FROM worksessions where stop_time is not null GROUP BY date;').fetchall()
+        results = cursor.execute('SELECT date, activity, ROUND(SUM(stop_time-start_time)*1.0/3600, 2) FROM worksessions where stop_time is not null GROUP BY activity, date;').fetchall()
         daily_workhours_list = [DailyWorkHours(*daily_workhours) for daily_workhours in results]
         connection.close()
         return daily_workhours_list
