@@ -33,3 +33,4 @@ It is built using Typer.
 ## TODO
 
 - [x] Add the ability to track time for multiple activities.
+- [] ceate a plot to see how time much was spent in each activity over time
