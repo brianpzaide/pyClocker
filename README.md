@@ -32,4 +32,4 @@ It is built using Typer.
 
 ## TODO
 
-[ X ] Add the ability to track time for multiple activities.
+- [x] Add the ability to track time for multiple activities.
