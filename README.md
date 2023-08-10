@@ -24,6 +24,7 @@ If such a record does not exist in the database, the app notifies the user to st
 it does this by computing the sum of difference between ```stop_time``` and ```start_time``` having ```date``` as current date and ```stop_time``` as not null.
 
 * ```daily```: This displays a graph showing hours invested in programming every day.
+  ![daily activity report](daily_time_spent.png)
 
 It is built using these amazing projects [Typer](https://github.com/tiangolo/typer), [Plotly](https://github.com/plotly), [tabulate](https://github.com/astanin/python-tabulate)
 
@@ -33,11 +34,11 @@ It is built using these amazing projects [Typer](https://github.com/tiangolo/typ
  
 2. run ```pyClocker init``` to set the sqlite database file location.
 
-3. Fake data generator is provided for visualization purposes, to generate fake data
+3. Fake data generator is provided for visualization purposes, to generate fake data,
 after changing to ```fakedatagen``` directory, run ```python3 datagen.py```
 
 4. The above step would generate sqlite database file called ```worksessions.db``` in the current folder. Move this generated file to the location that was set in step 2. Then run ```pyClocker daily``` to see a graph showing time spent on various activity on each day.
-![daily activity report](daily_time_spent.png)
+
 
 ## TODO
 
