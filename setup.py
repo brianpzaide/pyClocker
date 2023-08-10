@@ -8,9 +8,10 @@ setup(
     author='brianpzaide',
     url='https://github.com/brianpzaide/pyClocker',
     install_requires=[
-                      "matplotlib==3.6.3",
                       "typer==0.9.0",
-                      "tabulate==0.9.0"],
+                      "tabulate==0.9.0",
+                      "pandas==2.0.3",
+                      "plotly==5.15.0"],
     packages=find_packages(),
     entry_points={
         'console_scripts': [

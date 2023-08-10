@@ -1,10 +1,12 @@
 import configparser
 from pathlib import Path
 from collections import namedtuple
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Tuple
 from datetime import date, datetime
 
 import sqlite3
+
+import pandas as pd
 
 DEFAULT_DATE_FORMAT = '%d-%m-%Y'
 DEFAULT_DB_FILE_PATH = Path.joinpath(Path.cwd(), "_pyClocker", "worksessions.db")
@@ -59,6 +61,7 @@ class DatabaseHandler:
         latest_work_session = cursor.execute('SELECT * FROM worksessions where date=? order by start_time desc limit 1;', (date.today().strftime(DEFAULT_DATE_FORMAT),)).fetchone()
         if latest_work_session:
             latest_work_session = WorkSessionInfo(*latest_work_session)
+        connection.close()
         return latest_work_session
 
     def create_work_session(self, activity):
@@ -75,10 +78,14 @@ class DatabaseHandler:
         connection.commit()
         connection.close()
 
-    def get_daily_time_spent_on_work(self) -> List[DailyWorkHours]:
+    def get_daily_time_spent_on_work(self) -> Tuple[pd.DataFrame, List[str]]:
         connection = sqlite3.connect(self._db_path)
+        df = pd.read_sql_query("SELECT date, activity, ROUND(SUM(stop_time-start_time)*1.0/3600, 2) as hours FROM worksessions where stop_time is not null GROUP BY date, activity;", connection)
+        df['date'] = pd.to_datetime(df['date'], format=DEFAULT_DATE_FORMAT)
+
         cursor = connection.cursor()
-        results = cursor.execute('SELECT date, activity, ROUND(SUM(stop_time-start_time)*1.0/3600, 2) FROM worksessions where stop_time is not null GROUP BY activity, date;').fetchall()
-        daily_workhours_list = [DailyWorkHours(*daily_workhours) for daily_workhours in results]
+        activities = cursor.execute('SELECT distinct activity FROM worksessions;').fetchall()
+
         connection.close()
-        return daily_workhours_list
+        
+        return df, [activity[0] for activity in activities]

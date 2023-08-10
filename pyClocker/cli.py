@@ -1,22 +1,20 @@
 from pathlib import Path
-from typing import Optional, List
-from dataclasses import dataclass
-from collections import defaultdict
+from typing import Optional
 
 import typer
 from typing_extensions import Annotated
 
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 from . import(
     SUCCESS, ERRORS, __app_name__, __version__, config, database, pyClocker
 )
 
+
 class ActivityDailyWorkHours():
     def __init__(self):
         self.dates = []
         self.sessions = []
-    
 
 app = typer.Typer()
 
@@ -114,26 +112,53 @@ def hours_today() -> None:
 @app.command(name="daily")
 def daily_stats() -> None:
     """Get number of hours put in everyday."""
+
     mpt = get_pyClocker()
-    res = mpt.hours_put_in_daily()
-    activities_days_hours = defaultdict(ActivityDailyWorkHours)
+    df, activities = mpt.hours_put_in_daily()
 
-    for dwh in res:
-        if not activities_days_hours.get(dwh.activity):
-            activities_days_hours[dwh.activity] = ActivityDailyWorkHours()
-        activities_days_hours[dwh.activity].dates.append(dwh.date)
-        activities_days_hours[dwh.activity].sessions.append(dwh.hours)
-    
-    # plotting a line graph x-axis: days, y-xis: hours
-    plt.style.use('_mpl-gallery')
-    fig, ax = plt.subplots()
-    for activity in activities_days_hours.keys():
-        ax.plot(activities_days_hours[activity].dates, activities_days_hours[activity].sessions, linewidth=2.0)
-    plt.legend(activities_days_hours.items(), loc='upper left')
-    ax.set_xlabel("day->")
-    ax.set_ylabel("hours->")
-    plt.show()
+    # Create figure
+    fig = go.Figure()
+    for activity in activities:
+        fig.add_trace(
+            go.Scatter(x=list(df.date), y=df[activity], name =activity))
 
+    # Set title
+    fig.update_layout(
+        title_text="Hours spent on various activities"
+    )
+
+    # Add range slider
+    fig.update_layout(
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1,
+                         label="1m",
+                         step="month",
+                         stepmode="backward"),
+                    dict(count=6,
+                         label="6m",
+                         step="month",
+                         stepmode="backward"),
+                    dict(count=1,
+                         label="YTD",
+                         step="year",
+                         stepmode="todate"),
+                    dict(count=1,
+                         label="1y",
+                         step="year",
+                         stepmode="backward"),
+                    dict(step="all")
+                ])
+            ),
+            rangeslider=dict(
+                visible=True
+            ),
+            type="date"
+        )
+    )
+
+    fig.show()
 
 def _version_callback(value:bool) -> None:
     if value:

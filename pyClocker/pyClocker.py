@@ -1,11 +1,13 @@
 from pathlib import Path
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from . import SUCCESS, CREATE_SESSION_ERROR, STOP_SESSION_ERROR
 from .database import DatabaseHandler, DailyWorkHours
 
 from tabulate import tabulate
+
+import pandas as pd
 
 class PyClocker:
     def __init__(self, db_path: Path) -> None:
@@ -52,6 +54,10 @@ class PyClocker:
         return tabulate(hours_spent_today, headers = ["activity", "time spent(hours)"])
         
     
-    def hours_put_in_daily(self) -> List[DailyWorkHours]:
+    def hours_put_in_daily(self) -> Tuple[pd.DataFrame, List[str]]:
         """Get number of hours put in everyday."""
-        return self._db_handler.get_daily_time_spent_on_work()
+        df, activities = self._db_handler.get_daily_time_spent_on_work()
+        new_df = df.pivot_table(index='date', columns='activity', values='hours', fill_value=0)
+        new_df.reset_index(inplace=True)
+        new_df.columns = ['date', *activities]
+        return new_df, activities
