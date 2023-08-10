@@ -23,7 +23,7 @@ If such a record does not exist in the database, the app notifies the user to st
 * ```today```: This returns the total hours one has invested in programming today.
 it does this by computing the sum of difference between ```stop_time``` and ```start_time``` having ```date``` as current date and ```stop_time``` as not null.
 
-* ```daily```: This displays a graph showing hours invested in programming every day.
+* ```daily```: This displays a graph showing hours invested in various hobbies each day.
   ![daily activity report](daily_time_spent.png)
 
 It is built using these amazing projects [Typer](https://github.com/tiangolo/typer), [Plotly](https://github.com/plotly), [tabulate](https://github.com/astanin/python-tabulate)
