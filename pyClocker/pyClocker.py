@@ -59,5 +59,8 @@ class PyClocker:
         df, activities = self._db_handler.get_daily_time_spent_on_work()
         new_df = df.pivot_table(index='date', columns='activity', values='hours', fill_value=0)
         new_df.reset_index(inplace=True)
-        new_df.columns = ['date', *activities]
+        # print("original df")
+        # print(df.head())
+        # print("new df")
+        # print(new_df.head())
         return new_df, activities

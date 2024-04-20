@@ -84,7 +84,7 @@ class DatabaseHandler:
         df['date'] = pd.to_datetime(df['date'], format=DEFAULT_DATE_FORMAT)
 
         cursor = connection.cursor()
-        activities = cursor.execute('SELECT distinct activity FROM worksessions;').fetchall()
+        activities = cursor.execute('SELECT distinct activity FROM worksessions where stop_time is NOT NULL;').fetchall()
 
         connection.close()
         
