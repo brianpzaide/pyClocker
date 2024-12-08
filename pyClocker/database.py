@@ -58,7 +58,7 @@ class DatabaseHandler:
     def get_current_work_session(self) -> WorkSessionInfo:
         connection = sqlite3.connect(self._db_path)
         cursor = connection.cursor()
-        latest_work_session = cursor.execute('SELECT * FROM worksessions where date=? order by start_time desc limit 1;', (date.today().strftime(DEFAULT_DATE_FORMAT),)).fetchone()
+        latest_work_session = cursor.execute('SELECT * FROM worksessions where stop_time is NULL order by start_time desc limit 1;').fetchone()
         if latest_work_session:
             latest_work_session = WorkSessionInfo(*latest_work_session)
         connection.close()
